@@ -1,0 +1,98 @@
+{embed="site/head" loc="auction" lightbox="true"}
+
+<div class="content">
+
+	<div class="content-left">
+		{exp:channel:entries channel="auction" limit="1" show_expired="yes"}
+			<div class="post">
+				<div class="auction-top">
+					<h2>
+						{if segment_2}
+							<a href="{title_permalink="auction/index"}">{title}</a>
+						{if:else}
+							{title}
+						{/if}
+					</h2>
+					{related_entries id="artist"}
+						<span class="artist">{title}</span>
+					{/related_entries}
+				</div>
+				<div class="auction-preview">
+					<p><span class="work-details">{type_medium}, {size_of_piece}, {year_produced}</span></p>
+					{description}
+					<img src="{auction_image:reduced}" alt="{title}" class="auction-image" />
+					{related_entries id="non_profit"}
+						<p><strong>Designated Non-Profit:</strong> <a href="{npo_website}">{title}</a></p>
+						{npo_description}
+					{/related_entries}
+				</div>
+				{if expiration_date > current_time }
+				<div class="auction-help">
+					<p>Having trouble logging in or placing a bid? <a href="mailto:example@example.com">Email Me!</a></p>
+				</div>
+				{/if}
+			</div>
+
+			// Show bid history for Super Admins and Admins
+			
+			{if member_group == "1" OR member_group == "6"}
+				<h2>Bid History:</h2>
+				<table id="bid-history">
+				{exp:auction:history entry_id="{entry_id}"}
+				{/exp:channel:entries}
+					{if no_results} <li>No bids yet</li> {/if}
+					<tr>
+						<td><a href="mailto:{email}">{m_field_id_1} {m_field_id_2}</a></td>
+						<td>{m_field_id_3}</a></td>
+						<td>${bid_amount}</td>
+						<td class="date">{bid_date format="%D, %M %j, %Y"}</td>
+					</tr>
+				{/exp:auction:history}
+				</table>
+			{/if}
+		
+	</div>
+	{exp:channel:entries channel="auction" limit="1" show_expired="yes"}
+	<div class="content-right">
+		<div id="auction-form" class="portlet">
+			<h3>Place A Bid</h3>
+			<h4>Auction Status:</h4>
+			{if expiration_date < current_time }
+				<p class="small">Auction ended:<br />
+				{expiration_date format="%F %j %Y"}</p>
+				<h4>Winning Bid:</h4>
+				{exp:auction:summary entry_id="{entry_id}"}
+					<p class="small">$ {current_bid}</p>
+				{/exp:auction:summary}
+			{if:else}
+				<p class="small">In progress through:<br />
+				{expiration_date format="%F %j %Y %g:%i %A"}</p>
+				<h4>Current High Bid:</h4>
+				{exp:auction:summary entry_id="{entry_id}"}
+					<p class="small">$ {current_bid}</p>
+				{/exp:auction:summary}
+				<h4>Place a Bid:</h4>
+				{if logged_in}
+				{exp:auction:form entry_id="{entry_id}"}
+					<input type="text" name="bid_amount" value="0.00" />
+					<input type="submit" name="submit" class="btn" value="Submit" />
+				{/exp:auction:form}
+				{/exp:channel:entries}
+				{exp:member:custom_profile_data}
+					<p class="small">You are logged in as {first_name} {last_name}</p>
+				{/exp:member:custom_profile_data}
+					<p class="small"><a href="{path='logout'}">Log out</a> | <a href="{path='member/profile'}">Edit settings</a></p>
+				{if:else}
+					<p class="small">You must <a id="login-open" href="#login-form">log in</a> to place a bid.</p>
+				{/if}
+				
+			{/if}
+		</div>
+	</div>
+	
+</div>
+
+{login_form}
+
+{embed="site/navigation" loc="auction"}
+{embed="site/footer"}
