@@ -77,19 +77,19 @@ class Auction {
 	
 	public function place_bid() 
 	{
-		$entry_id = $this->EE->input->post("entry_id", TRUE);
-		$member_id = $this->EE->session->userdata('member_id');
-		$bid_amount = $this->EE->input->post("bid_amount", TRUE);
-		$bid_date = $this->EE->localize->now; 
+		$entry_id	= $this->EE->input->post("entry_id", TRUE);
+		$member_id	= $this->EE->session->userdata('member_id');
+		$bid_amount	= $this->EE->input->post("bid_amount", TRUE);
+		$bid_date	= $this->EE->localize->now; 
 		
 		$query = $this->EE->db->query( "SELECT * FROM exp_auction WHERE entry_id = $entry_id ORDER BY bid_amount DESC LIMIT 1");
 		$high_bid = $query->row(1)->bid_amount;
 		
 		$data = array(
-			"entry_id" => $entry_id,
-			"member_id" => $member_id,
-			"bid_amount" => $bid_amount,
-			"bid_date" => $bid_date
+			"entry_id"		=> $entry_id,
+			"member_id"		=> $member_id,
+			"bid_amount"	=> $bid_amount,
+			"bid_date"		=> $bid_date
 		);
 		
 		if ($bid_amount > $high_bid) {
@@ -99,10 +99,10 @@ class Auction {
 			$ret = $this->EE->functions->create_url('auction/index');
 
 			$data = array(
-				'title' => 'Thanks for your bid',
-				'heading' => 'Thanks for your bid',
-				'content' => "Your bid has been successfully placed",
-				'link' => array($ret, "Back to site")
+				'title'		=> 'Thanks for your bid',
+				'heading'	=> 'Thanks for your bid',
+				'content'	=> "Your bid has been successfully placed",
+				'link'		=> array($ret, "Back to site")
 			);
 			$this->EE->output->show_message($data); 	
 		}
